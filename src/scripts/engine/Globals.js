@@ -6,6 +6,7 @@ export const Globals = {
     keyboardMgr: {},
     mouseMgr: {},
     sceneMgr: {},
+    scale: 1,
     resource: {
         sprite: {},
         spriteSheet: {},

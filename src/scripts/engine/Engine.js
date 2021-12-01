@@ -165,6 +165,9 @@ export class Engine {
             } else {
                 height = width / ar[0] * ar[1];
             }
+
+            Globals.scale = width / this.config.canvasWidth;
+            console.log(Globals.scale)
         }
 
         Globals.canvas.width = width;

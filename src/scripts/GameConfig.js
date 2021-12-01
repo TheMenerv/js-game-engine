@@ -1,7 +1,7 @@
 export const GameConfig = {
     env: "dev",
-    canvasWidth: 0,
-    canvasHeight: 0,
+    canvasWidth: 1280,
+    canvasHeight: 720,
     aspectRatio: "16/9",
     hotResize: true,
     showFPS: true,
