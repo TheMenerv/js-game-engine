@@ -149,18 +149,30 @@ export class Engine {
      * @private
      */
     _setCanvasSize() {
-        let width = this.config.canvasWidth === "auto" ?
+        let width = this.config.canvasWidth === "auto" || this.config.aspectRatio !== null ?
             window.innerWidth : this.config.canvasWidth;
 
-        let height = this.config.canvasHeight === "auto" ?
+        let height = this.config.canvasHeight === "auto" || this.config.aspectRatio !== null ?
             window.innerHeight : this.config.canvasHeight;
+
+        if (this.config.aspectRatio !== null) {
+            const ar = this.config.aspectRatio.split("/");
+            ar[0] = parseInt(ar[0]);
+            ar[1] = parseInt(ar[1]);
+
+            if (width / ar[0] > height / ar[1]) {
+                width = height / ar[1] * ar[0];
+            } else {
+                height = width / ar[0] * ar[1];
+            }
+        }
 
         Globals.canvas.width = width;
         Globals.canvas.height = height;
 
         if (
             !this._windowResizeEventSub && this.config.hotResize &&
-            (this.config.canvasWidth === "auto" || this.config.canvasHeight === "auto")
+            (this.config.canvasWidth === "auto" || this.config.canvasHeight === "auto" || this.config.aspectRatio !== null)
         ) {
             window.onresize = () => {
                 this._setCanvasSize();
