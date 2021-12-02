@@ -238,6 +238,7 @@ export class Engine {
 
         this._drawables.forEach(d => {
             Globals.ctx.save();
+            Globals.ctx.scale(Globals.scale, Globals.scale);
             d.drawable.draw(Globals.ctx);
             Globals.ctx.restore();
         });

@@ -17,7 +17,7 @@ export class SpriteSheet extends Sprite {
         this._currentAnimation = null;
         this._currentAnimationFrame = 0;
         this._animationTimer = 0;
-        this._animations = animations;
+        this.animations = animations;
         this.animationFinished = false;
     }
 
@@ -35,7 +35,7 @@ export class SpriteSheet extends Sprite {
 
         let found = false;
 
-        this._animations.forEach(animation => {
+        this.animations.forEach(animation => {
             if (animation.name === name) {
                 this._currentAnimation = animation;
                 this._currentAnimationFrame = 0;
