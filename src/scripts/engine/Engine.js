@@ -62,7 +62,6 @@ export class Engine {
      * @private
      */
     _gameLoopInit() {
-        this._windowResizeEventSub = false;
         this._lastUpdate = 0;
         this.dt = 0;
         this.ctx = null;
@@ -138,9 +137,9 @@ export class Engine {
         Globals.canvas = document.createElement("canvas");
         Globals.canvas.id = "canvas";
         Globals.canvas.tabIndex = 1;
-        this._setCanvasSize();
         this.config.canvasNode.appendChild(Globals.canvas);
         Globals.ctx = Globals.canvas.getContext("2d");
+        this._setCanvasSize();
     }
 
 
@@ -149,6 +148,8 @@ export class Engine {
      * @private
      */
     _setCanvasSize() {
+        const canvas = Globals.canvas;
+
         let width = this.config.canvasWidth === "auto" || this.config.aspectRatio !== null ?
             window.innerWidth : this.config.canvasWidth;
 
@@ -167,21 +168,14 @@ export class Engine {
             }
 
             Globals.scale = width / this.config.canvasWidth;
-            console.log(Globals.scale)
         }
 
-        Globals.canvas.width = width;
-        Globals.canvas.height = height;
+        canvas.width = width;
+        canvas.height = height;
 
-        if (
-            !this._windowResizeEventSub && this.config.hotResize &&
-            (this.config.canvasWidth === "auto" || this.config.canvasHeight === "auto" || this.config.aspectRatio !== null)
-        ) {
-            window.onresize = () => {
-                this._setCanvasSize();
-            };
-            this._windowResizeEventSub = true;
-        }
+        const rect = canvas.getBoundingClientRect();
+        canvas.x = rect.x;
+        canvas.y = rect.y;
     }
 
 

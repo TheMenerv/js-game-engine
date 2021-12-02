@@ -41,4 +41,13 @@ export class Sprite extends EventEmitter {
 
         ctx.drawImage(this._image, x, y, w, h);
     }
+
+
+    /**
+     * Clone
+     * @returns {Sprite}
+     */
+    clone() {
+        return new Sprite(this.url);
+    }
 }

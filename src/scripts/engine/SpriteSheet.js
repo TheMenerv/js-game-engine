@@ -11,10 +11,11 @@ export class SpriteSheet extends Sprite {
      */
     constructor(url, frameWidth, frameHeight, animations) {
         super(url);
-
+        
+        this.url = url;
         this._frameWidth = frameWidth;
         this._frameHeight = frameHeight;
-        this._currentAnimation = null;
+        this.currentAnimation = null;
         this._currentAnimationFrame = 0;
         this._animationTimer = 0;
         this.animations = animations;
@@ -27,8 +28,8 @@ export class SpriteSheet extends Sprite {
      * @param {String} name
      */
     setAnimation(name) {
-        if (this._currentAnimation != null) {
-            if (this._currentAnimation.name === name) {
+        if (this.currentAnimation != null) {
+            if (this.currentAnimation.name === name) {
                 return;
             }
         }
@@ -37,7 +38,7 @@ export class SpriteSheet extends Sprite {
 
         this.animations.forEach(animation => {
             if (animation.name === name) {
-                this._currentAnimation = animation;
+                this.currentAnimation = animation;
                 this._currentAnimationFrame = 0;
                 this.animationFinished = false;
                 this._animationTimer = 0;
@@ -56,17 +57,17 @@ export class SpriteSheet extends Sprite {
      * @param {Number} dt
      */
     update(dt) {
-        if (this._currentAnimation === null) return;
+        if (this.currentAnimation === null) return;
 
         this._animationTimer += dt;
-        if (this._animationTimer >= 1/this._currentAnimation.speed) {
+        if (this._animationTimer >= 1/this.currentAnimation.speed) {
             this._animationTimer = 0;
             this._currentAnimationFrame++;
-            if (this._currentAnimationFrame >= this._currentAnimation.frames.length) {
-                if (this._currentAnimation.loop) {
+            if (this._currentAnimationFrame >= this.currentAnimation.frames.length) {
+                if (this.currentAnimation.loop) {
                     this._currentAnimationFrame = 0;
                 } else {
-                    this._currentAnimationFrame = this._currentAnimation.frames.length - 1;
+                    this._currentAnimationFrame = this.currentAnimation.frames.length - 1;
                     this.animationFinished = true;
                 }
             }
@@ -79,7 +80,7 @@ export class SpriteSheet extends Sprite {
      * @param {CanvasRenderingContext2D} ctx
      */
     draw(ctx) {
-        const frameID = this._currentAnimation.frames[this._currentAnimationFrame];
+        const frameID = this.currentAnimation.frames[this._currentAnimationFrame];
 
         const columns = this._image.width / this._frameWidth;
 
@@ -106,5 +107,14 @@ export class SpriteSheet extends Sprite {
             width,
             height
         );
+    }
+
+
+    /**
+     * Clone
+     * @returns {SpriteSheet}
+     */
+    clone() {
+        return new SpriteSheet(this.url, this._frameWidth, this._frameHeight, this.animations);
     }
 }
