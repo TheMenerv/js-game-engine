@@ -16,6 +16,8 @@ export class Sprite extends EventEmitter {
         this._scale = { x: 1, y: 1 };
         this.x = 0;
         this.y = 0;
+        this._flipH = false;
+        this._flipV = false;
     }
 
 
@@ -30,16 +32,51 @@ export class Sprite extends EventEmitter {
 
 
     /**
+     * Horizontal flip
+     */
+    flipH() {
+        this._flipH = true;
+    }
+
+
+    /**
+     * Vertical flip
+     */
+    flipV() {
+        this._flipV = true;
+    }
+
+
+    /**
      * Sprite drawing
      * @param {CanvasRenderingContext2D} ctx
      */
     draw(ctx) {
-        let x = this.x - (this._image.width / 2) * this._scale.x;
-        let y = this.y - (this._image.height / 2) * this._scale.y;
-        let w = this._image.width * this._scale.x;
-        let h = this._image.height * this._scale.y;
+        const x1 = this.x - (this._image.width / 2) * this._scale.x;
+        const x2 = -this.x - (this._image.width / 2) * this._scale.x;
+        const y1 = this.y - (this._image.height / 2) * this._scale.y;
+        const y2 = -this.y - (this._image.height / 2) * this._scale.y;
+        const w = this._image.width * this._scale.x;
+        const h = this._image.height * this._scale.y;
 
-        ctx.drawImage(this._image, x, y, w, h);
+        if (this._flipH && !this._flipV) {
+            ctx.save();
+            ctx.scale(-1, 1);
+            ctx.drawImage(this._image, x2, y1, w, h);
+            ctx.restore();
+        } else if(this._flipV && !this._flipH) {
+            ctx.save();
+            ctx.scale(1, -1);
+            ctx.drawImage(this._image, x1, y2, w, h);
+            ctx.restore();
+        } else if(this._flipV && this._flipH) {
+            ctx.save();
+            ctx.scale(-1, -1);
+            ctx.drawImage(this._image, x2, y2, w, h);
+            ctx.restore();
+        } else {
+            ctx.drawImage(this._image, x1, y1, w, h);
+        }
     }
 
 

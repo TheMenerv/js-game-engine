@@ -12,7 +12,7 @@ const LOGO = `
     ██║╚██╔╝██║╚════╝██╔══╝  ██║╚██╗██║██║   ██║██║██║╚██╗██║██╔══╝
     ██║ ╚═╝ ██║      ███████╗██║ ╚████║╚██████╔╝██║██║ ╚████║███████╗
     ╚═╝     ╚═╝      ╚══════╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝╚═╝  ╚═══╝╚══════╝
-    HTML5 Game Engine powered by Menerv.
+    JavaScript Game Engine powered by Menerv.
     Copyright © 2021, all rights reserved.
 `;
 
@@ -65,6 +65,16 @@ export class Engine {
         this._lastUpdate = 0;
         this.dt = 0;
         this.ctx = null;
+        window.requestAnimFrame = (function (callback) {
+            return window.requestAnimationFrame ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame ||
+                window.oRequestAnimationFrame ||
+                window.msRequestAnimaitonFrame ||
+                function (callback) {
+                    window.setTimeout(callback, 1000/60);
+                };
+        })();
     }
 
 
@@ -148,8 +158,6 @@ export class Engine {
      * @private
      */
     _setCanvasSize() {
-        const canvas = Globals.canvas;
-
         let width = this.config.canvasWidth === "auto" || this.config.aspectRatio !== null ?
             window.innerWidth : this.config.canvasWidth;
 
@@ -170,12 +178,12 @@ export class Engine {
             Globals.scale = width / this.config.canvasWidth;
         }
 
-        canvas.width = width;
-        canvas.height = height;
+        Globals.canvas.width = width;
+        Globals.canvas.height = height;
 
-        const rect = canvas.getBoundingClientRect();
-        canvas.x = rect.x;
-        canvas.y = rect.y;
+        const rect = Globals.canvas.getBoundingClientRect();
+        Globals.canvas.x = rect.x;
+        Globals.canvas.y = rect.y;
     }
 
 
@@ -198,14 +206,15 @@ export class Engine {
      * @private
      */
     _addEventListeners() {
+        const canvas = Globals.canvas;
         // Keyboard events
-        Globals.canvas.addEventListener("keydown", Globals.keyboardMgr.onKeyDown.bind(Globals.keyboardMgr));
-        Globals.canvas.addEventListener("keyup", Globals.keyboardMgr.onKeyUp.bind(Globals.keyboardMgr));
+        canvas.addEventListener("keydown", Globals.keyboardMgr.onKeyDown.bind(Globals.keyboardMgr));
+        canvas.addEventListener("keyup", Globals.keyboardMgr.onKeyUp.bind(Globals.keyboardMgr));
         // Mouse events
-        Globals.canvas.addEventListener("mousemove", Globals.mouseMgr.onMouseMove.bind(Globals.mouseMgr));
-        Globals.canvas.addEventListener("mousedown", Globals.mouseMgr.onMouseDown.bind(Globals.mouseMgr));
-        Globals.canvas.addEventListener("mouseup", Globals.mouseMgr.onMouseUp.bind(Globals.mouseMgr));
-        Globals.canvas.addEventListener("contextmenu", Globals.mouseMgr.onContextMenu.bind(Globals.mouseMgr));
+        canvas.addEventListener("mousemove", Globals.mouseMgr.onMouseMove.bind(Globals.mouseMgr));
+        canvas.addEventListener("mousedown", Globals.mouseMgr.onMouseDown.bind(Globals.mouseMgr));
+        canvas.addEventListener("mouseup", Globals.mouseMgr.onMouseUp.bind(Globals.mouseMgr));
+        canvas.addEventListener("contextmenu", Globals.mouseMgr.onContextMenu.bind(Globals.mouseMgr));
     }
 
 
@@ -228,14 +237,14 @@ export class Engine {
         });
 
         Globals.ctx.clearRect(0, 0, Globals.canvas.width, Globals.canvas.height);
-        this._showFPS();
 
         this._drawables.forEach(d => {
             Globals.ctx.save();
-            Globals.ctx.scale(Globals.scale, Globals.scale);
             d.drawable.draw(Globals.ctx);
             Globals.ctx.restore();
         });
+
+        this._showFPS();
     }
 
 

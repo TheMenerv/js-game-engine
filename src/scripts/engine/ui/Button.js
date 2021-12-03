@@ -81,17 +81,17 @@ export class Button {
      * @param {Number} dt
      */
     update(dt) {
-        if (this.state === "disabled") {
-            this.clicked = false;
-            return;
-        }
-
         if (this._haveImage) {
             for (let name in this._image) {
                 let image = this._image[name];
                 image.x = this.x;
                 image.y = this.y;
             }
+        }
+
+        if (this.state === "disabled") {
+            this.clicked = false;
+            return;
         }
 
         const mouse = Globals.mouseMgr;
